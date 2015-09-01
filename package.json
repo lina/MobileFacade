@@ -1,7 +1,7 @@
 {
-  "name": "mobile-facade",
+  "name": "user-services",
   "version": "0.0.1",
-  "description": "Facade for our Mobile Application",
+  "description": "Provides User information for our Application Stack",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
