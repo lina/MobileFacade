@@ -3,6 +3,8 @@ var router = express.Router();
 var request = require('request');
 var passport = require('passport');
 var FacebookTokenStrategy = require('passport-facebook-token').Strategy;
+var UserManager = require('../../managers/user');
+var userManager = new UserManager();
 router.use(passport.initialize());
 
 options = {
@@ -10,25 +12,23 @@ options = {
   clientSecret: process.env.FACEBOOK_APP_SECRET || "d018e4926746117d64546bed6bc4e06b"
 }
 
-
+// Set up a local strategy session.
+// TODO: Memcache for multiple users
 passport.use(new FacebookTokenStrategy({
     clientID: options.clientID,
     clientSecret: options.clientSecret
   },
+
   function(accessToken, refreshToken, profile, done) {
-    request.get(
-      "https://graph.facebook.com/v2.4/me?access_token=" + accessToken + "&" + 
-      "fields=id,name,gender,location,website,picture,relationship_status,likes,email&" + //Add extra requests here...
-      "format=json", 
-
-      function(err, resp, data) {
-        console.log(err, resp, data);
-        //Handle random other shit
-
-        //use done for passport.
-      }
-    );
+    userManager.reqUser(accessToken)
+      .then(function(body){
+        done(null, body);
+      })
+      .catch(function(err){
+        done(err, null);
+      })
   }
+
 ));
 
 
