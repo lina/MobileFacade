@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../../models/user');
 var request = require('request');
 var passport = require('passport');
 var FacebookTokenStrategy = require('passport-facebook-token').Strategy;
@@ -43,30 +42,10 @@ router.post('/facebook', passport.authenticate('facebook-token', { session: fals
   res.sendStatus(req.user ? 200 : 401);
 });
 
-router.post('/checkin', function(req, res){
-  if (req.user) {
-    var lat = req.body.lat;
-    var long = req.body.long;
-    var activity = req.body.activity;
-
-    request.post('http://localhost:3001/api/checkin', {} ,function(req, res){
-
-    });
-  }
-  
-
-})
 
 router.post('/twitter', function(req,res){ 
   res.send('twitter');
 
 });
-
-
-router.post('/', function(req,res){
-
-});
-
-
 
 module.exports = router;
