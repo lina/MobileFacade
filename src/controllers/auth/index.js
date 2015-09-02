@@ -37,8 +37,6 @@ router.use(require('cors')());
 
 router.post('/facebook', passport.authenticate('facebook-token', { session: false }) ,function (req, res) {
     // do something with req.user 
-  console.log(req.user);
-  console.log('req recived');
   res.sendStatus(req.user ? 200 : 401);
 });
 

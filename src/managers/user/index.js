@@ -8,19 +8,29 @@ function UserManager(){
 };
 
 UserManager.prototype.reqUser = function(userToken) {
-  console.log(userToken);
 
   return new Promise(function(resolve, reject){
-    //this.url intergration
-    request.post('http://localhost:3002' + '/api/user/', {token: userToken}, function(err, resp, body){
-      if (err) {
-        reject(err);
-      } else if(resp.status != '200'){
-        reject(new Error('status code:',resp.status));
-      } else {
-        resolve(body);
+
+    request.get("https://graph.facebook.com/v2.4/me?" 
+      + "access_token=" + userToken + "&" + 
+      "fields=id,name,gender,location,website,picture,relationship_status,likes,email&" + 
+      "format=json", 
+
+      function(err, resp, data){
+        request.post(
+          {
+            url: 'http://localhost:3002' + '/api/user/',
+            json: {
+              token: userToken,
+              userData: resp.body
+            }
+          },
+          function(req, userSerivceRes){
+            resolve(userSerivceRes);
+          }
+        );
       }
-    });
+    )
   })
 };
 
