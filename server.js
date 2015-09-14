@@ -6,6 +6,8 @@ var userManager = new UserManager();
 var FacebookTokenStrategy = require('passport-facebook-token').Strategy;
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var process = require('./config');
+
 
 app.use('/api/', require('./src/controllers'));
 
@@ -22,6 +24,8 @@ passport.use(new FacebookTokenStrategy({
   },
 
   function(accessToken, refreshToken, profile, done) {
+    console.log('clientId', options.clientID);
+    console.log('clientSecret', options.clientSecret);
     console.log('AUTH USER');
     userManager.reqUser(accessToken)
       .then(function(user){

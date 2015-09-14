@@ -76,6 +76,10 @@ router.post('/getcheckin', passport.authenticate('facebook-token', { session: fa
 var prettifyData = function(data, userBody){
   var userData = JSON.parse(userBody);
 
+  if(!userData.likes) {
+    return null;
+  }
+
   if (!userData.likes.data || !data.geo[0] || !data.geo[1] || !userData.picture.data.url || !userData.name)
     return null;
 

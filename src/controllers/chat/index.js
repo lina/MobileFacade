@@ -19,3 +19,25 @@ router.post('/sendMessage', passport.authenticate('facebook-token', { session: f
   //   res.sendStatus(201);
   // });
 })
+
+console.log('inside chat controller index.js')
+
+router.post('/getUserChats', passport.authenticate('facebook-token', {session: false }), function(req, res) {
+  console.log('inside /getUserChats, index.js chat controllers MobileFacade, req.query.userId:', req.query.userId);
+  console.log('inside /getUserChats, index.js chat controllers MobileFacade, req.query', req.query);
+  console.log('inside /getUserChats, index.js chat controllers MobileFacade, req.user', req.user);
+  console.log('inside /getUserChats, index.js chat controllers MobileFacade, req.user.fbId', req.user.fbId);
+
+
+  console.log('inside /getUserChats, index.js chat controllers MobileFacade, req.query', JSON.stringify(req.query));
+
+
+  chatManager.getUserChats(req.user.fbId)
+  .then(function(body) {
+    console.log('body',body);
+    res.send(body);
+    res.sendStatus(201);
+  });
+});
+
+module.exports = router;
