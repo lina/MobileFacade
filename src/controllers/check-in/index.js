@@ -21,7 +21,6 @@ router.post('/addcheckin', passport.authenticate('facebook-token', { session: fa
   .catch(function(err){
     console.error(err);
   });
-
 })
 
 router.post('/getcheckin', passport.authenticate('facebook-token', { session: false }), function(req, res){
