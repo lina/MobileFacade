@@ -36,7 +36,7 @@ router.post('/getUserChats', passport.authenticate('facebook-token', {session: f
   .then(function(body) {
     console.log('body',body);
     res.send(body);
-    res.sendStatus(201);
+    // res.sendStatus(201);
   });
 });
 

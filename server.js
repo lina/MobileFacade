@@ -47,28 +47,64 @@ var server = http.listen(port, function () {
   console.log('MobileFacade listening at http://%s:%s', host, port);
 });
 
-
-// io.on('connection', function (socket) {
-//     console.log('socket connected');
-
-//     socket.on('user login', function(data) {
-//       console.log('socket.on user login')
-//       console.log('data in userlogin', data)
-//     })
-
-//     socket.on('disconnect', function () {
-//         console.log('socket disconnected');
-//     });
-
-//     socket.emit('text', 'wow. such event. very real time.');
-// });
+var users = {};
 
 io.on('connection', function (socket) {
     console.log('socket connected');
     socket.emit('news', { hello: 'world' });
+
+    // test code
     socket.on('my other event', function (data) {
         console.log('should say world', data);
       });
+    // console.log('--------------------->socket,', socket);
+
+    socket.on('new user logged on', function(data, callback) {
+      console.log('#####################################################################')
+      console.log('------------------------>data,', data);
+
+      if (data in users){
+        callback(false);
+      } else {
+        callback(true);
+        socket.nickname = data;
+        users[socket.nickname] = socket;
+        // updateNicknames();
+      }
+      console.log('---------------->users',users);
+    });
+
+    socket.on('send message', function(data, receiverUser, callback){
+      console.log('.on "send message" in MobileFacade server.js')
+      console.log('---------------------------------->data', data);
+
+      data.message = data.message.trim();
+
+
+      // var message = data.message.trim();
+      // var messageTime = data.messageTime;
+      var senderId = data.senderId;
+      // var senderProfileImage = data.senderProfileImage;
+      // var 
+      console.log('senderId', senderId);
+      console.log('----------------------->users', users);
+
+      for (var key in users) {
+        console.log('------------------>this key exists in user', key);
+      }
+
+      // var id = users[name].id;
+      if (receiverUser in users){      
+        console.log('*****************users[senderId] inside server.js MobileFacade', users[senderId]);
+        users[receiverUser].emit('receive new message', data, function(data) {
+          console.log('.emit to ', userId);
+        });
+        // socket.emit('new message', {msg: msg, nick: socket.nickname});
+      } else {
+        callback('Error! Invalid user selected.');
+      }
+    });
+
 
     socket.on('user login', function(data) {
       console.log('socket.on user login')
