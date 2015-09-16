@@ -52,6 +52,19 @@ io.on('connection', function (socket) {
     console.log('socket connected');
     socket.emit('news', { hello: 'world' });
 
+    socket.on('added new user to chat', function(
+      data, 
+      currentUser
+      ) {
+      for (var key in data) {
+        if(key !== currentUser) {
+          users[key].emit('chat participant updates', data, function(data) {
+            console.log('emit "chat participant updates"')
+          })          
+        }
+      }
+    })
+
     // test code
     socket.on('my other event', function (data) {
         console.log('should say world', data);
@@ -73,7 +86,12 @@ io.on('connection', function (socket) {
       console.log('---------------->users',users);
     });
 
-    socket.on('send message', function(data, receiverUser, callback){
+    socket.on('send message', function(
+      data, 
+      participantUserIDs, 
+      // currentUserId, 
+      callback
+      ){
       console.log('.on "send message" in MobileFacade server.js')
       console.log('---------------------------------->data', data);
 
@@ -88,20 +106,28 @@ io.on('connection', function (socket) {
       console.log('senderId', senderId);
       console.log('----------------------->users', users);
 
-      for (var key in users) {
-        console.log('------------------>this key exists in user', key);
-      }
+      // for (var key in users) {
+      //   console.log('------------------>this key exists in user', key);
+      // }
+      console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&participantUserIDs', participantUserIDs)
 
       // var id = users[name].id;
-      if (receiverUser in users){      
-        console.log('*****************users[senderId] inside server.js MobileFacade', users[senderId]);
-        users[receiverUser].emit('receive new message', data, function(data) {
-          console.log('.emit to ', userId);
-        });
-        // socket.emit('new message', {msg: msg, nick: socket.nickname});
-      } else {
-        callback('Error! Invalid user selected.');
+      // if (receiverUser in users){      
+      // console.log('*****************users[senderId] inside server.js MobileFacade', users[senderId]);
+      for (var key in participantUserIDs) {
+        console.log('should be true', users[key], 'userId', key)
+        console.log('senderId', senderId)
+        if(key !== senderId  && users[key]) {
+          users[key].emit('receive new message', data, function(data) {
+
+            console.log('**************************************************.emit to ', key);
+          });                    
+        }
       }
+        // socket.emit('new message', {msg: msg, nick: socket.nickname});
+      // } else {
+      //   callback('Error! Invalid user selected.');
+      // }
     });
 
 
