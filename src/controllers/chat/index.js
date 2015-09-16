@@ -10,7 +10,7 @@ router.use(require('cors')());
 
 
 router.post('/sendMessage', passport.authenticate('facebook-token', { session: false }),  function(req, res){
-  console.log('req.body', req.body);
+  // console.log('req.body', req.body);
   console.log('ChatManagerManager', ChatManagerManager);
 
   chatManager.sendMsg();
@@ -34,7 +34,7 @@ router.post('/getUserChats', passport.authenticate('facebook-token', {session: f
 
   chatManager.getUserChats(req.user.fbId)
   .then(function(body) {
-    console.log('body',body);
+    // console.log('body',body);
     res.send(body);
     // res.sendStatus(201);
   });
@@ -42,11 +42,11 @@ router.post('/getUserChats', passport.authenticate('facebook-token', {session: f
 
 router.post('/getChatDetails', passport.authenticate('facebook-token', {session:false}), function(req, res) {
   console.log('inside /getChatDetails');
-  console.log('inside /getChatDetails req:', req);
+  // console.log('inside /getChatDetails req:', req);
 
   chatManager.getChatDetails(req.body.chatIDs) 
   .then(function(body) {
-    console.log('body', body);
+    // console.log('body', body);
     res.send(body);
   })
 

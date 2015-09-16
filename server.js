@@ -65,13 +65,10 @@ io.on('connection', function (socket) {
       }
     })
 
-    socket.on('update other user private chat storage', function(
-      receiverID, 
-      chatID, 
-      senderID
-      ) {
+    socket.on('update other user private chat storage', function(receiverID, chatID, senderID) {
       console.log("socket.on 'update other user private chat storage'");
       if(users[receiverID]) {
+        console.log('------------------------------&&&&&&&&&&&&&&&&&&&&: about to emit to change private chat storage')
         users[receiverID].emit('receiving changes to private chat storage', function(chatID, senderID) {
           console.log("socket emit 'receiving changes to private chat storage'");
         })
@@ -116,14 +113,16 @@ io.on('connection', function (socket) {
         console.log('should be a userID',key);
         console.log('senderId', senderId);
         console.log('about to emit a message');
+        console.log('this should be true:', typeof users[key], ', key:', key);
         if(users[key] && key !== senderId) {
+          console.log('user does exist in key, and the user is other than the sender. next function emits message');
           users[key].emit('receive new message', data, function(data) {
 
             console.log('**************************************************.emit to ', key);
           });                    
-          
+          console.log('message emitted')
         } else {
-          console.log('user most likely offline');
+          console.log('either user is offline or trying to send to sender');
         }
       }
     });

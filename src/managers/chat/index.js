@@ -52,7 +52,7 @@ ChatManager.prototype.getChatDetails = function(chatIDs) {
       if(err) {
         reject(err);
       } else {
-        console.log('body inside getChatDetails', body);
+        // console.log('body inside getChatDetails', body);
         resolve(body);
       }
     });
