@@ -46,7 +46,7 @@ var server = http.listen(port, function () {
   console.log('MobileFacade listening at http://%s:%s', host, port);
 });
 
-var users = {};
+var users = users || {};
 
 io.on('connection', function (socket) {
     console.log('socket connected');
@@ -65,6 +65,18 @@ io.on('connection', function (socket) {
       }
     })
 
+    socket.on('update other user private chat storage', function(
+      receiverID, 
+      chatID, 
+      senderID
+      ) {
+      console.log("socket.on 'update other user private chat storage'");
+      users[receiverID].emit('receiving changes to private chat storage', function(chatID, senderID) {
+        console.log("socket emit 'receiving changes to private chat storage'");
+      })
+    })
+
+
     // test code
     socket.on('my other event', function (data) {
         console.log('should say world', data);
@@ -73,7 +85,7 @@ io.on('connection', function (socket) {
 
     socket.on('new user logged on', function(data, callback) {
       console.log('#####################################################################')
-      console.log('------------------------>data,', data);
+      // console.log('------------------------>data,', data);
 
       if (data in users){
         callback(false);
@@ -83,7 +95,7 @@ io.on('connection', function (socket) {
         users[socket.nickname] = socket;
         // updateNicknames();
       }
-      console.log('---------------->users',users);
+      // console.log('---------------->users',users);
     });
 
     socket.on('send message', function(
@@ -93,7 +105,7 @@ io.on('connection', function (socket) {
       callback
       ){
       console.log('.on "send message" in MobileFacade server.js')
-      console.log('---------------------------------->data', data);
+      // console.log('---------------------------------->data', data);
 
       data.message = data.message.trim();
 
@@ -115,14 +127,16 @@ io.on('connection', function (socket) {
       // if (receiverUser in users){      
       // console.log('*****************users[senderId] inside server.js MobileFacade', users[senderId]);
       for (var key in participantUserIDs) {
-        console.log('should be true', users[key], 'userId', key)
-        console.log('senderId', senderId)
-        if(key !== senderId  && users[key]) {
+        console.log('should be a userID',key);
+        console.log('senderId', senderId);
+        // if(key !== senderId  && users[key]) {
+          // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ users[key]', users[key]);
+          console.log('about to emit a message');
           users[key].emit('receive new message', data, function(data) {
 
             console.log('**************************************************.emit to ', key);
           });                    
-        }
+        // }
       }
         // socket.emit('new message', {msg: msg, nick: socket.nickname});
       // } else {

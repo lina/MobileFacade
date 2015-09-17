@@ -46,7 +46,31 @@ UserManager.prototype.reqUserServices = function(userIndex, fn){
   request.get(this.url + userIndex, function(err, res, userbody){
     fn(err, res, userbody);
   })
-}
+};
 
+UserManager.prototype.chatGetUserInfo = function(userID) {
+  var currentUrl = this.url;
+  return new Promise(function(resolve, reject) {
+    request.post( 
+    {
+      url: currentUrl + '/api/user/chatGetUserInfo/',
+      body: {
+        userID: userID
+      },
+      json: true
+    }, 
+    function(err, resp, body) {
+      if(err) {
+        reject(err);
+
+      } else {
+        // console.log('body inside chatGetUserInfo:', body);
+        resolve(body);
+      }
+    });
+  })
+};
 
 module.exports = UserManager;
+
+// leave extra line at end

@@ -15,8 +15,8 @@ ChatManager.prototype.sendMsg = function() {
 
 ChatManager.prototype.getUserChats = function(userId) {
   var currentUrl = this.url;
-  console.log('userId inside chatManager', userId);
-  console.log('retrieving user chats from:',currentUrl + '/api/userChats/getAllUserChats')
+  // console.log('userId inside chatManager', userId);
+  // console.log('retrieving user chats from:',currentUrl + '/api/userChats/getAllUserChats')
   return new Promise(function(resolve, reject) {
     request.post(
       {
@@ -30,7 +30,29 @@ ChatManager.prototype.getUserChats = function(userId) {
       if(err) {
         reject(err);
       } else {
-        console.log('body inside getUserChats', body);
+        // console.log('body inside getUserChats', body);
+        resolve(body);
+      }
+    });
+  })
+};
+
+ChatManager.prototype.getChatDetails = function(chatIDs) {
+  var currentUrl = this.url;
+  console.log('inside chatManager.getChatDetails');
+  return new Promise(function(resolve, reject) {
+    request.post({
+      url: currentUrl + '/api/chat/getChatDetails/', 
+      body: {
+        chatIDs: chatIDs
+      },
+      json: true
+    },
+    function(err, resp, body) {
+      if(err) {
+        reject(err);
+      } else {
+        console.log('body inside getChatDetails', body);
         resolve(body);
       }
     });
