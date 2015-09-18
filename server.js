@@ -71,9 +71,14 @@ io.on('connection', function (socket) {
       senderID
       ) {
       console.log("socket.on 'update other user private chat storage'");
-      users[receiverID].emit('receiving changes to private chat storage', function(chatID, senderID) {
-        console.log("socket emit 'receiving changes to private chat storage'");
-      })
+      if(users[receiverID]) {
+        users[receiverID].emit('receiving changes to private chat storage', function(chatID, senderID) {
+          console.log("socket emit 'receiving changes to private chat storage'");
+        })
+        
+      } else {
+        console.log('receiver offline');
+      }
     })
 
 
@@ -98,50 +103,29 @@ io.on('connection', function (socket) {
       // console.log('---------------->users',users);
     });
 
-    socket.on('send message', function(
-      data, 
-      participantUserIDs, 
-      // currentUserId, 
-      callback
-      ){
+    socket.on('send message', function(data, participantUserIDs, callback) {
       console.log('.on "send message" in MobileFacade server.js')
-      // console.log('---------------------------------->data', data);
-
       data.message = data.message.trim();
-
-
-      // var message = data.message.trim();
-      // var messageTime = data.messageTime;
       var senderId = data.senderId;
-      // var senderProfileImage = data.senderProfileImage;
-      // var 
       console.log('senderId', senderId);
-      console.log('----------------------->users', users);
-
-      // for (var key in users) {
-      //   console.log('------------------>this key exists in user', key);
-      // }
-      console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&participantUserIDs', participantUserIDs)
-
-      // var id = users[name].id;
-      // if (receiverUser in users){      
-      // console.log('*****************users[senderId] inside server.js MobileFacade', users[senderId]);
+      for (var key in users) {
+        console.log('key in users:', key);
+      }
+      console.log('&&&&&&&&&&&&&&&&&&&participantUserIDs', participantUserIDs)
       for (var key in participantUserIDs) {
         console.log('should be a userID',key);
         console.log('senderId', senderId);
-        // if(key !== senderId  && users[key]) {
-          // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ users[key]', users[key]);
-          console.log('about to emit a message');
+        console.log('about to emit a message');
+        if(users[key] && key !== senderId) {
           users[key].emit('receive new message', data, function(data) {
 
             console.log('**************************************************.emit to ', key);
           });                    
-        // }
+          
+        } else {
+          console.log('user most likely offline');
+        }
       }
-        // socket.emit('new message', {msg: msg, nick: socket.nickname});
-      // } else {
-      //   callback('Error! Invalid user selected.');
-      // }
     });
 
 
