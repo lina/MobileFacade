@@ -83,7 +83,7 @@ io.on('connection', function (socket) {
           console.log('user not found in users object');
         }
       }
-    })
+    });
 
     socket.on('update other user private chat storage', function(receiverID, chatID, senderID) {
       console.log("**********************************socket.on 'update other user private chat storage'");
