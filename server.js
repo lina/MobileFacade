@@ -65,13 +65,37 @@ io.on('connection', function (socket) {
       }
     })
 
+    socket.on('tell other user to update localStorage messages', function(receiverIDs) {
+      console.log('********************receiverIDs:', receiverIDs);
+      for (var key in receiverIDs) {
+        console.log('should be a userID',key);
+        // console.log('senderId', senderId);
+        console.log('about to tell other user to update localStorage');
+        console.log('this should be true:', typeof users[key], ', key:', key);
+        if(users[key]) {
+          console.log('user does exist in key, and the user is other than the sender. next function tells user tou update');
+          users[key].emit('update localStorage messages', function() {
+
+            console.log('emit to key:', key);
+          });                    
+          console.log('emitted to other user to update localStorage')
+        } else {
+          console.log('user not found in users object');
+        }
+      }
+    })
+
     socket.on('update other user private chat storage', function(receiverID, chatID, senderID) {
-      console.log("socket.on 'update other user private chat storage'");
+      console.log("**********************************socket.on 'update other user private chat storage'");
+      console.log('receiverID:', receiverID);
+      console.log('chatID:',chatID);
+      console.log('senderID:', senderID);
       if(users[receiverID]) {
         console.log('------------------------------&&&&&&&&&&&&&&&&&&&&: about to emit to change private chat storage')
-        users[receiverID].emit('receiving changes to private chat storage', function(chatID, senderID) {
+        users[receiverID].emit('receiving changes to private chat storage', chatID, senderID, function(data) {
           console.log("socket emit 'receiving changes to private chat storage'");
         })
+        console.log('emitted to change private chat storage');
         
       } else {
         console.log('receiver offline');
