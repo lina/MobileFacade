@@ -71,6 +71,31 @@ UserManager.prototype.chatGetUserInfo = function(userID) {
   })
 };
 
+UserManager.prototype.chatGetUsersInfo = function(userID) {
+  // console.log('inside userManager index.js');
+  // console.log('requesting info for userID:', userID);
+  var currentUrl = this.url;
+  return new Promise(function(resolve, reject) {
+    request.post( 
+    {
+      url: currentUrl + '/api/user/chatGetUsersInfo/',
+      body: {
+        userID: userID
+      },
+      json: true
+    }, 
+    function(err, resp, body) {
+      if(err) {
+        reject(err);
+
+      } else {
+        // console.log('body inside chatGetUserInfo:', body);
+        resolve(body);
+      }
+    });
+  })
+};
+
 module.exports = UserManager;
 
 // leave extra line at end
