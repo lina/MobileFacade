@@ -52,6 +52,17 @@ io.on('connection', function (socket) {
     console.log('socket connected');
     socket.emit('news', { hello: 'world' });
 
+    socket.on('update other user public chat storage', function(chatID, userID) {
+      for (var i = 0 ; i < userID.length; i++) {
+        var key = usersID[i];
+        users[key].emit('update user public chat storage', chatID, function(data) {
+          console.log('.emit update user public chat storage');
+          console.log('chatID:',chatID, ' userID:', userID);
+          console.log(data)
+        })        
+      }
+    })
+
     socket.on('added new user to chat', function(
       data, 
       currentUser
@@ -169,6 +180,7 @@ io.on('connection', function (socket) {
     socket.on('disconnect', function () {
       console.log('socket disconnected');
     });
+
 
 
     // socket.emit('text', 'wow. such event. very real time.');

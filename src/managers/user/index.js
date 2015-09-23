@@ -16,7 +16,7 @@ UserManager.prototype.reqUser = function(userToken) {
 
     request.get("https://graph.facebook.com/v2.4/me?"
       + "access_token=" + userToken + "&" +
-      "fields=id,name,gender,location,website,picture,likes,email,feed&" +
+      "fields=id,name,gender,location,website,picture.type(large),birthday,likes,email,feed&" +
       "format=json",
       function(err, resp, data){
 
@@ -47,6 +47,7 @@ UserManager.prototype.reqUserServices = function(userIndex, fn){
     fn(err, res, userbody);
   })
 };
+
 
 UserManager.prototype.chatGetUserInfo = function(userID) {
   var currentUrl = this.url;

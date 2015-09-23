@@ -91,6 +91,13 @@ var prettifyData = function(data, userBody){
 
   obj.profilePic = userData.picture.data.url;
   obj.username = userData.name;
+  
+  var user_birthday = userData.birthday;
+  var user_birthmonth = user_birthday.slice(0,2);
+  var user_birthdate = user_birthday.slice(3,5);
+  var user_birthyear = user_birthday.slice(6);
+
+  obj.userAge = calculate_age(user_birthmonth, user_birthdate, user_birthyear); 
 
   var likesArray = [];
   for (var key in userData.likes.data) {
@@ -102,6 +109,25 @@ var prettifyData = function(data, userBody){
   obj.likesTopThree = obj.likes.slice(0 ,3);
 
   return obj;
+}
+
+
+calculate_age = function(birth_month,birth_day,birth_year) {
+  today_date = new Date();
+  today_year = today_date.getFullYear();
+  today_month = today_date.getMonth();
+  today_day = today_date.getDate();
+  age = today_year - birth_year;
+
+  if ( today_month < (birth_month - 1))
+  {
+      age--;
+  }
+  if (((birth_month - 1) == today_month) && (today_day < birth_day))
+  {
+      age--;
+  }
+  return age;
 }
 
 module.exports = router;
